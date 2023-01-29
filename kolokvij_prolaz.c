@@ -5,6 +5,7 @@
 // 
 //ispisat sve studente koji su prosli ispit odnosno sve koji su oba kolokvija imali preko 50%
 //
+//pri formiranju liste treba sortirat po prezimenu pa po imenu
 
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -42,6 +43,7 @@ int main(){
 	scanf("%s", ime_filea);
 
 	povratna = prviKolRezultati(&head, ime_filea);
+	
 	if (povratna == -1) {
 		delAll(&head);
 		return 0;
@@ -70,8 +72,8 @@ int prviKolRezultati(studentPosition p, char ime_filea[20]) {
 
 	FILE* pF = NULL;
 	studentPosition ne = NULL;
-	/*studentPosition head = NULL;
-	head= p;*/
+	studentPosition head = NULL;
+	head= p;
 
 
 	pF = fopen(ime_filea, "r");
@@ -90,28 +92,38 @@ int prviKolRezultati(studentPosition p, char ime_filea[20]) {
 
 		fscanf(pF, "%s %s %d", ne->ime, ne->prezime, &ne->prvi_kolokvij);
 
-		/*p = head;*/
+		p = head;
 
-		//while (p->next != NULL && strcmp(p->next->prezime, ne->prezime)<0) {
+		while (p->next != NULL && strcmp(p->next->prezime, ne->prezime)<=0) {
 
-		//	/*if (strcmp(p->next->prezime, ne->prezime) == 0) {
+			if (strcmp(p->next->prezime, ne->prezime) == 0) {
 
-		//		while (p->next != NULL && strcmp(p->next->ime, ne->ime) < 0) {
-		//			p = p->next;
-		//		}
-		//	}*/
-		//	
-		//		p = p->next;
-		//	
+				if (strcmp(p->next->ime, ne->ime) < 0) {
+					p = p->next;
+					
 
-		//	
-		//}
+				}
+				else
+					break;
+				
+			}
+			else {
 
-		ne->next = NULL;
+				p = p->next;
+
+			}
+			
+		}
+	
+		
+
+
+		ne->next = p->next;
 		p->next = ne;
-		p = p->next;
 
-		/*printList(&p);*/
+		
+
+		
 		
 	}
 
@@ -130,7 +142,7 @@ void delAll(studentPosition p) {
 void printList(studentPosition p) {
 
 	while (p != NULL) {
-		if(p->prvi_kolokvij>=50 && p->drugi_kolokvij>=50)
+		/*if(p->prvi_kolokvij>=50 && p->drugi_kolokvij>=50)*/
 		printf("%s %s %d %d\n", p->ime, p->prezime, p->prvi_kolokvij,p->drugi_kolokvij);
 
 		p = p->next;
@@ -141,22 +153,36 @@ void printList(studentPosition p) {
 int drugiKolRezultati(studentPosition p, char ime_filea[20]) {
 	FILE* pF = NULL;
 
+	studentPosition temp = NULL;
+	studentPosition head = p;
+	
+
 	pF = fopen(ime_filea, "r");
 	if (pF == NULL) {
 		printf("greska s otvaranjem filea %s\n", ime_filea);
 		return -1;
 	}
 
+	
+
 	while (!feof(pF)) {
-		p = p->next;
 
-		fscanf(pF, "%s %s %d", p->ime, p->prezime, &p->drugi_kolokvij);
+		temp = (studentPosition)malloc(sizeof(student));
+		if (temp == NULL) {
+			printf("greska u din alloc\n");
+			return -1;
+		}
+		
+		
+		fscanf(pF, "%s %s %d", temp->ime, temp->prezime, &temp->drugi_kolokvij);
+		p = head;
 
-		
-		
-		
+		while (p->next != NULL && ! (strcmp(p->next->prezime, temp->prezime) == 0 && strcmp(p->next->ime,temp->ime)==0)){
+				p = p->next;
+		}
+		p->next->drugi_kolokvij = temp->drugi_kolokvij;
 
 	}
-
+	
 	return 0;
 }
