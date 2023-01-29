@@ -1,4 +1,4 @@
-//Napisati program koji generira 20 sluèajnih brojeva u opsegu od 10 - 20 i sprema ih u vezanu listu, po
+//Napisati program koji generira 20 sluÃ¨ajnih brojeva u opsegu od 10 - 20 i sprema ih u vezanu listu, po
 //redoslijedu generiranja, a ne sortirano.
 //a) Korisnik unosi jedan broj i potrebno je iz vezane liste izbrisati sva pojavljivanja tog broja i
 //ispisati vezanu listu.
