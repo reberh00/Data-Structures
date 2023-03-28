@@ -1,3 +1,12 @@
+/*Napisati klasu koja predstavlja kompleksni broj.
+Klasa ima privatne podatke i gettere i settere.
+Napisati funkcije za zbrajanje, oduzimanje,
+množenje i dijeljenje kompleksnih brojeva.
+Funkcije kao rezultat vraćaju kompleksni broj.
+Zatražiti od korisnika unos dva kompleksna broja.
+Izračunati zbroj, razliku, produkt i kvocijent.
+*/
+
 #include <iostream>
 
 using namespace std;
