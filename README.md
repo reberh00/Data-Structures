@@ -1,2 +1,1 @@
-# nothing
-for fun
+# college
