@@ -14,13 +14,14 @@ struct Node_ {
 
 bool push_front(nodeposition);
 bool push_back(nodeposition);
+void push_sort(nodeposition);
 void print_list(nodeposition);
 void pop_front(nodeposition);
 void pop_all(nodeposition);
 void pop_back(nodeposition);
 void search(nodeposition);
-//add reverse list, sort add, myb add front searched num
-//delete searched number NE RADI
+void deleteNode(nodeposition, int);
+void reverseList(nodeposition);
 
 bool is_good = true;
 
@@ -30,21 +31,23 @@ int main() {
 
 	int choice = 0;
 
-	
+
 
 	srand((unsigned)time(NULL));
 
-	while (choice != 14) {
+	while (true) {
 
 		cout << "****************************" << endl;
 		cout << "Press: " << endl;
 		cout << "1 to insert number at the beginning of the list" << endl;
 		cout << "2 to insert number at the end of the list" << endl;
-		cout << "3 to print list" << endl;
-		cout << "4 to search for certain number from the list" << endl;
-		cout << "5 to delete first number from the list" << endl;
-		cout << "6 to delete last number from the list" << endl;
-		cout << "7 to delete the list" << endl;
+		cout << "3 to insert number and sort it in the list" << endl;
+		cout << "4 to print list" << endl;
+		cout << "5 to search for certain number from the list" << endl;
+		cout << "6 to delete first number from the list" << endl;
+		cout << "7 to delete last number from the list" << endl;
+		cout << "8 to delete the list" << endl;
+		cout << "9 to reverse the list" << endl;
 		cout << "anything else to end program" << endl;
 		cout << "****************************" << endl;
 
@@ -67,19 +70,25 @@ int main() {
 			}
 			break;
 		case 3:
-			print_list(head.next);
+			push_sort(&head);
 			break;
 		case 4:
-			search(head.next);
+			print_list(head.next);
 			break;
 		case 5:
-			pop_front(&head);
+			search(head.next);
 			break;
 		case 6:
-			pop_back(&head);
+			pop_front(&head);
 			break;
 		case 7:
+			pop_back(&head);
+			break;
+		case 8:
 			pop_all(&head);
+			break;
+		case 9:
+			reverseList(&head);
 			break;
 		default:
 			pop_all(&head);
@@ -88,7 +97,7 @@ int main() {
 		}
 	}
 
-	
+
 
 	return 0;
 }
@@ -96,48 +105,81 @@ bool push_front(nodeposition p) {
 
 	nodeposition ne;
 
-	
-		ne = new Node();
-		if (ne == NULL) {
-			return false;
-		}
-		ne->number = (rand() % (120 - 100 + 1) + 100);
-		cout << "Added number is: " << ne->number << endl;
 
-		ne->next = p->next;
-		p->next = ne;
+	ne = new Node();
+	if (ne == NULL) {
+		return false;
+	}
+	ne->number = (rand() % (120 - 100 + 1) + 100);
+	cout << "Added number is: " << ne->number << endl;
 
-	
+	ne->next = p->next;
+	p->next = ne;
+
+
 	return true;
 }
 bool push_back(nodeposition p) {
 	nodeposition ne, p_head;
-	
+
 
 	p_head = p;
 
-	
-		ne = new Node();
-		if (ne == NULL)
-			return false;
 
-		p = p_head;
+	ne = new Node();
+	if (ne == NULL)
+		return false;
 
-		while (p->next != NULL) {
+	p = p_head;
+
+	while (p->next != NULL) {
+		p = p->next;
+	}
+	ne->number = (rand() % (120 - 100 + 1)) + 100;
+	cout << "Added number is: " << ne->number << endl;
+
+	ne->next = p->next;
+	p->next = ne;
+
+	return true;
+}
+void push_sort(nodeposition p) {
+
+	nodeposition ne;
+
+	ne = new Node();
+	if (ne == NULL) {
+		cout << "Dyn alloc mistake" << endl;
+		exit(0);
+	}
+
+	cout << "Add number to list" << endl;
+
+	//for user input validation
+	while (!(cin >> ne->number)) {
+		cout << "Invalid input. Please enter a valid number." << endl;
+		cin.clear(); //clears error flag
+		cin.ignore(numeric_limits<streamsize>::max(), '\n'); //discards invalid input
+	}
+
+	if (p->next == NULL || ne->number <= p->next->number) {
+
+		ne->next = p->next;
+		p->next = ne;
+	}
+	else {
+		while (p->next != NULL && ne->number > p->next->number) {
 			p = p->next;
 		}
-		ne->number = (rand()%(120 - 100 + 1)) + 100;
-		cout << "Added number is: " << ne->number << endl;
 
 		ne->next = p->next;
 		p->next = ne;
 
-	
+	}
 
-	return true;
 }
 void print_list(nodeposition p) {
-	cout << "Printed list: ";
+	cout << "printed list: ";
 
 	if (p == NULL) {
 		cout << "there are no elements in this list" << endl;
@@ -152,14 +194,14 @@ void print_list(nodeposition p) {
 	cout << endl;
 }
 void pop_front(nodeposition p) {
-	
+
 	nodeposition temp;
 
 	cout << "Number " << p->next->number << " is about to be deleted." << endl;
 
-		temp = p->next;
-		p->next = temp->next;
-		free(temp);
+	temp = p->next;
+	p->next = temp->next;
+	free(temp);
 
 }
 void pop_back(nodeposition p) {
@@ -193,12 +235,19 @@ void search(nodeposition p) {
 
 	int number_to_search;
 	char choice;
-	
+	nodeposition head = p;
+
 
 	cout << "Enter the number you want to search " << endl;
-	cin >> number_to_search;
 
-	while (p->number != number_to_search && p!=NULL) {
+	//for user input validation
+	while (!(cin >> number_to_search)) {
+		cout << "Invalid input. Please enter a valid number." << endl;
+		cin.clear(); //clears error flag
+		cin.ignore(numeric_limits<streamsize>::max(), '\n'); //discards invalid input
+	}
+
+	while (p->number != number_to_search && p != NULL) {
 		p = p->next;
 
 	}
@@ -208,17 +257,63 @@ void search(nodeposition p) {
 	}
 
 	cout << "You searched for number: " << p->number << endl;
-	cout << "Press d if you want to delete the number, press a if you want to add number after searched number, or anything else if you just wanted to search number" << endl;
+
+	cout << "Press d if you want to delete the number, press a if you want to add number after the searched number,";
+	cout << " or anything else if you just wanted to search the number" << endl;
 	cin >> choice;
+
 	if (choice == 'a') {
 		is_good = push_front(p);
 		if (!is_good) {
 			cout << "Dyn alloc mistake" << endl;
 			exit(0);
-		}
-		else if (choice == 'd') {
-			pop_front(p);
-		}
+		}	
 	}
+	else if (choice == 'd') {
+		deleteNode(head, number_to_search);
+	}
+
+}
+void deleteNode(nodeposition p, int value) {
+
+	while (p->next != NULL && p->next->number != value) {
+		p = p->next;
+	}
+
+	if (p->next != NULL) {
+		nodeposition temp = p->next;
+		p->next = temp->next;
+		free(temp);
+		cout << value << " has been deleted." << endl;
+	}
+	else {
+		cout << "Value was not found" << endl;
+	}
+
+
+}
+void reverseList(nodeposition head) {
+
+	if (head->next == NULL || head->next->next == NULL) {
+		cout << "List is empty or has only one element" << endl;
+		return;
+	}
+
+	nodeposition current = head->next;
+	nodeposition prev = NULL;
+	nodeposition forward;
 	
+	while (current != NULL) {
+		forward = current->next;
+		current->next = prev;
+
+		prev = current;
+		current = forward;
+		
+
+	}
+	head = prev;
+
+	cout << "Reversed ";
+	print_list(head);
 }
