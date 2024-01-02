@@ -201,7 +201,7 @@ void pop_front(nodeposition p) {
 
 	temp = p->next;
 	p->next = temp->next;
-	free(temp);
+	delete temp;
 
 }
 void pop_back(nodeposition p) {
@@ -215,7 +215,7 @@ void pop_back(nodeposition p) {
 
 	temp = p->next;
 	p->next = temp->next;
-	free(temp);
+	delete temp;
 
 }
 void pop_all(nodeposition p) {
@@ -225,7 +225,7 @@ void pop_all(nodeposition p) {
 
 		temp = p->next;
 		p->next = temp->next;
-		free(temp);
+		delete temp;
 
 	}
 	cout << "List deleted" << endl;
@@ -267,7 +267,7 @@ void search(nodeposition p) {
 		if (!is_good) {
 			cout << "Dyn alloc mistake" << endl;
 			exit(0);
-		}	
+		}
 	}
 	else if (choice == 'd') {
 		deleteNode(head, number_to_search);
@@ -283,7 +283,7 @@ void deleteNode(nodeposition p, int value) {
 	if (p->next != NULL) {
 		nodeposition temp = p->next;
 		p->next = temp->next;
-		free(temp);
+		delete temp;
 		cout << value << " has been deleted." << endl;
 	}
 	else {
@@ -302,14 +302,14 @@ void reverseList(nodeposition head) {
 	nodeposition current = head->next;
 	nodeposition prev = NULL;
 	nodeposition forward;
-	
+
 	while (current != NULL) {
 		forward = current->next;
 		current->next = prev;
 
 		prev = current;
 		current = forward;
-		
+
 
 	}
 	head = prev;
